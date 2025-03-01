@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import logoSplash from './assets/images/logo_splash.PNG';
 import logoAbout from './assets/images/logo_about.png';
-
+import { RiInformationLine } from 'react-icons/ri'; // імпортуємо іконку
 
 const apiKey = process.env.REACT_APP_CURRENTS_API_KEY;
+
 // test forms
 const donations = [
     { id: 1, title: "Допомога 3-й ОШБ", description: "Збір на дрони для 3-ї ОШБ", amountRaised: 12000, goal: 50000, link: "#" },
@@ -88,6 +89,8 @@ const Contact = () => (
 
 const Projects = () => {
     const [news, setNews] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [modalContent, setModalContent] = useState(""); 
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -107,9 +110,19 @@ const Projects = () => {
         fetchNews();
     }, []);
 
+    const handleInfoClick = () => {
+        setModalContent("Якщо у вас не відображаються новини або виникають якісь інші проблеми, це може бути через проблему із сервером (505) або к-ть запитів закінчилися."); 
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setModalContent(""); 
+    };
+
     return (
         <section className="section" id="projects">
-            <h1>Новини - Live</h1>
+            <h1>Новини - Live <RiInformationLine onClick={handleInfoClick} className="info-icon" /></h1> {}
             <div id="news-container">
                 {news.length > 0 ? news.map((article, index) => (
                     <div key={index} className="news-item">
@@ -120,6 +133,16 @@ const Projects = () => {
                     </div>
                 )) : <p>Новини не знайдені.</p>}
             </div>
+
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close-btn" onClick={closeModal}>×</span>
+                     
+                        <p>{modalContent}</p>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };
